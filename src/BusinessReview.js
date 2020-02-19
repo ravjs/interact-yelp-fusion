@@ -1,14 +1,19 @@
 import React from 'react';
-import { Button, Container, Row, ListGroupItem, ListGroup, ListGroupItemHeading, ListGroupItemText} from 'reactstrap';
-import {useParams} from 'react-router-dom';      
+import {  Container,  ListGroupItem, ListGroup, ListGroupItemHeading, ListGroupItemText, Card, CardImg} from 'reactstrap';
 import axios from 'axios';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+    Link, useParams
+  } from "react-router-dom";
 
 class BusinessReview extends React.Component {
     constructor(props) {
 
         super(props);
 
-        // Don't do this!
+        // State declaration
         this.state = {
             error : null,
             isLoaded : false,
@@ -20,22 +25,12 @@ class BusinessReview extends React.Component {
     }
 
     componentDidMount () {
-        //const { term } = this.props.location.state.term
-        //const { id } = this.props.match.params
-        
-        
+       
         const { match: { params } } = this.props;
 
         console.log(" ID ==> " + params.userId);
         this.setState({ id: params.userId });
-        /*
-        axios.get(`/api/users/${params.userId}`)
-        .then(({ data: user }) => {
-          console.log('user', user);
-    
-          this.setState({ user });
-        });
-        */
+        
 
         async function makeRequest(id) {
 
@@ -73,20 +68,7 @@ class BusinessReview extends React.Component {
                 console.log(error);
             }
         )
-        /*
-        if( this.state.reviews = makeRequest(params.userId) ){
-            this.setState({
-                isLoaded : true,
-            })
-        }else{
-            this.setState({
-                isLoaded: true,
-                error : "Error"
-            })
-        }
-        */
-
-        //console.log(this.state.reviews)
+       
 
     }
 
@@ -105,6 +87,9 @@ class BusinessReview extends React.Component {
 
             return (
                 <div>
+                    
+                    <Link to = {`/business/`} > Go back on business </Link>
+
                 Reviews - {this.state.id} 
             
                
@@ -120,11 +105,15 @@ class BusinessReview extends React.Component {
             
                     <ListGroupItem key={rev.id}  >
                         
+                        <Card>
+                            <CardImg top width="200" src={rev.user.image_url}  alt="Card image cap" />
+                           
+                        </Card>
                         <ListGroupItemHeading> {rev.user.name} </ListGroupItemHeading>
                         <ListGroupItemText> {rev.text}      </ListGroupItemText>
 
                         <p> {rev.rate} </p>
-                        <p> {rev.user.image_url} </p>
+                        
             
                     </ListGroupItem>
                     

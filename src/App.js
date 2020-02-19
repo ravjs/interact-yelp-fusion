@@ -11,9 +11,8 @@ import {
   Route,
   Link, useParams
 } from "react-router-dom";
-import { Button, Nav, NavItem, NavLink } from 'reactstrap';
+//import { Button, Nav, NavItem, NavLink } from 'reactstrap';
 
-//GET https://api.yelp.com/v3/businesses/{id}/reviews
 export default function App() {
 
   
@@ -43,4 +42,3 @@ export default function App() {
 }
 
 
-// export default App;

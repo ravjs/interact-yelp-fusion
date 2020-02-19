@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { BUSINESSES } from "./mock-business"
-import { ListGroup, ListGroupItem, Media, CardImg,  Container, Row, Col  } from 'reactstrap';
+import { CardImg,  Container, Row, Col  } from 'reactstrap';
 import {
     BrowserRouter as Router,
     Switch,
@@ -17,21 +17,16 @@ export class business extends Component {
             business : []        
         };
     }
-    //GET https://api.yelp.com/v3/businesses/{id}/reviews
     
     componentDidMount() {
-        // I will use fake api from jsonplaceholder website
-        // this return 100 business 
+        // CORS not support by the API
         fetch("https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/search?location=Alpharetta", 
          {
-            //mode: 'no-cors', // 'cors' by default
             method: 'GET', 
             headers: {
                 //'Content-Type': 'application/x-www-form-encoded',
                 'Authorization': 'Bearer DOIkuu6qz2t-LyFO-8Z29oUmYtoIGLkLWdgY7GJIAPW2ZK7FkQMZ1RHvUS2MbbJN5i_MWEZGnMqnHs2iNSRnUsFg6SxncOcQ6u3ct96aw0XEjYIqvhUPqrlep8JIXnYx',
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-                //'Origin': '',
-                //'Host': 'api.yelp.com',
+               
                 'Accept' : '*/*',
                 'Access-Control-Allow-Origin': '*'
 
@@ -88,28 +83,20 @@ export class business extends Component {
 
                                 <Col md="4"> 
                                     <CardImg top width="200" src={bs.image_url} alt="Card image cap" />
-                                    {bs.id}
+                                   
                                 </Col>
 
                                 <Col md="8">
                                     
-                                    <Media className="mt-1">
-                                        <Media left middle href="#">
-                                        </Media>
-                                        <Media body>
-
-                                            <Media heading>
-                                                {bs.location.address1} , {bs.location.city}
-                                                {bs.name}
-                                            </Media>
-                                            {bs.review_count} 
-                                            <Link to = "/business/" {...bs.id } > See review </Link>
-
-                                        </Media>
-                                    </Media>
+                                    <p> {bs.location.address1} , {bs.location.city} </p>
+                                    <p> {bs.name} </p>
+                                    <p> {bs.review_count} </p>
+                                    <Link to = {`/business/${bs.id}`} > See review </Link>
+       
                                 </Col>
 
                             </Row>
+                            
                            
                         ))
                     }
