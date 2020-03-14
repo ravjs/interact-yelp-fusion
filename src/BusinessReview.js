@@ -1,5 +1,6 @@
 import React from 'react';
-import {  Container,  ListGroupItem, ListGroup, ListGroupItemHeading, ListGroupItemText, Card, CardImg} from 'reactstrap';
+import {  Container,  ListGroupItem, ListGroup, ListGroupItemHeading, ListGroupItemText, Card, CardImg, Row, Col,Button, 
+CardText, CardTitle, CardBody} from 'reactstrap';
 import axios from 'axios';
 import {
     BrowserRouter as Router,
@@ -17,6 +18,7 @@ class BusinessReview extends React.Component {
         this.state = {
             error : null,
             isLoaded : false,
+            business: null,
             reviews: [],
             id: null ,
         };
@@ -31,32 +33,54 @@ class BusinessReview extends React.Component {
         console.log(" ID ==> " + params.userId);
         this.setState({ id: params.userId });
         
+        //
 
-        async function makeRequest(id) {
-
+        // GET BUSINESS INFOS
+        async function getBusiness(id) {
             const config = {
                 method: 'GET',
-                url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/${id}/reviews`,
+                url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/${id}`,
                 headers: { 
                     'Authorization': 'Bearer DOIkuu6qz2t-LyFO-8Z29oUmYtoIGLkLWdgY7GJIAPW2ZK7FkQMZ1RHvUS2MbbJN5i_MWEZGnMqnHs2iNSRnUsFg6SxncOcQ6u3ct96aw0XEjYIqvhUPqrlep8JIXnYx',
                 }
             }
-        
             let res = await axios(config)
-            
             return res.data ;
         }
         
-        makeRequest(params.userId)
-        
+        getBusiness(params.userId)
         .then(
             // handle the result
             (result) => {
                 this.setState({
-                    isLoaded : true,
-                    reviews : result.reviews
+                    //isLoaded : true,
+                    business : result//.reviews
                 })
-                console.log(this.state.reviews);
+                console.log(this.state.business);
+
+
+                // For reviews
+                getReviews(params.userId)
+                .then(
+                    // handle the result
+                    (result) => {
+                        this.setState({
+                            isLoaded : true,
+                            reviews : result.reviews
+                        })
+                        console.log(this.state.reviews);
+                    } ,
+                    // Handle error 
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            error
+                        })
+                        console.log('ERROR');
+                        console.log(error);
+                    }
+                )
+
             } ,
             // Handle error 
             (error) => {
@@ -64,10 +88,38 @@ class BusinessReview extends React.Component {
                     isLoaded: true,
                     error
                 })
-                console.log('ERROR');
+                console.log('ERROR in getting the business');
                 console.log(error);
             }
         )
+
+        // GET REVIEWS OF THE BUSINESS
+        async function getReviews(id) {
+            const config = {
+                method: 'GET',
+                url: `https://cors-anywhere.herokuapp.com/https://api.yelp.com/v3/businesses/${id}/reviews`,
+                headers: { 
+                    'Authorization': 'Bearer DOIkuu6qz2t-LyFO-8Z29oUmYtoIGLkLWdgY7GJIAPW2ZK7FkQMZ1RHvUS2MbbJN5i_MWEZGnMqnHs2iNSRnUsFg6SxncOcQ6u3ct96aw0XEjYIqvhUPqrlep8JIXnYx',
+                }
+            }
+            let res = await axios(config)
+            return res.data ;
+        }
+        
+ 
+
+        /*
+        axios.all([getBusiness(), getReviews()])
+        .then(axios.spread(function (acct, perms) {
+            // Both requests are now complete
+            this.setState({
+                isLoaded: true,
+                error
+            })
+
+        }));
+
+        */
        
 
     }
@@ -77,7 +129,7 @@ class BusinessReview extends React.Component {
     render(){
 
         //this.setState( { id : useParams() });
-        const {error, isLoaded, reviews, id} = this.state;
+        const {error, isLoaded, business, reviews, id} = this.state;
 
         if(error){
             return <div>Error in loading</div>
@@ -85,44 +137,70 @@ class BusinessReview extends React.Component {
             return <div>Loading ...</div>
         }else{
 
+            console.log(business.image_url) ; 
+            //return true;
             return (
                 <div>
-                    
+
+                    <Container>
+
                     <Link to = {`/business/`} > Go back on business </Link>
 
-                Reviews - {this.state.id} 
-            
+                
+                <h3> Reviews of {this.state.business.name}  </h3>
+                <Row>
+
+                    <Col md="3"> 
+                        <Card> 
+                            <CardImg top width="100%" src={business.image_url} alt="Card image for " />
+                        </Card> 
+                    </Col>
+
+                    <Col md="9">
+                        <h3> Name: {business.name} </h3>
+
+                        <p> Location: {business.location.address1} , {business.location.city} </p>
+                        <p> Reviews : {business.review_count} </p>
+                        
+                    </Col>
+
+                </Row>
                
             
-            <Container>
+            
             <h3> Restaurants in Alpharetta </h3>
             
-            <ListGroup> 
 
             {
             
                 reviews.map(rev => (
             
-                    <ListGroupItem key={rev.id}  >
-                        
-                        <Card>
-                            <CardImg top width="200" src={rev.user.image_url}  alt="Card image cap" />
-                           
-                        </Card>
-                        <ListGroupItemHeading> {rev.user.name} </ListGroupItemHeading>
-                        <ListGroupItemText> {rev.text}      </ListGroupItemText>
+                    <Row>
 
-                        <p> {rev.rate} </p>
+                        <Col md="4" key={rev.id}>
                         
-            
-                    </ListGroupItem>
-                    
+                            <Card sm="12" >
+                                <CardImg top width="100%" src={rev.user.image_url}  alt="Card image cap" />
+                                <CardBody>
+                                    <CardTitle> {rev.user.name}  </CardTitle>
+                                    <CardText>{rev.text} </CardText>
+                                    <CardText>
+                                        <small className="">{rev.rate}</small>
+                                    </CardText>
+                                </CardBody>
+                            </Card>
+                        </Col>
+
+                    </Row>
                 ))
             }
 
-            </ListGroup>
+
+
             </Container>
             
+           
+
             </div> 
             
              ) 

@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { BUSINESSES } from "./mock-business"
-import { CardImg,  Container, Row, Col  } from 'reactstrap';
+import { CardImg,  Container, Row, Col, Button, Card, Alert, Badge} from 'reactstrap';
 import {
     BrowserRouter as Router,
     Switch,
     Route,
     Link, useParams
   } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCoffee} from '@fortawesome/free-solid-svg-icons'
 
 export class business extends Component {
     constructor(props){
@@ -54,7 +56,7 @@ export class business extends Component {
                 console.log(error);
             },
         )
-    }
+    };
     
     
     render() {
@@ -74,28 +76,36 @@ export class business extends Component {
 
             return(
                 <Container>
-                     <h3> Restaurants in Alpharetta </h3>
-                    
-                   
+
+                <Alert color="primary">
+                    <h2 style={{ 'text-align': 'center' }}> Restaurants in Alpharetta </h2>
+                </Alert>
+                                
+
                     {
                         business.businesses.map(bs => (
-                            <Row key={bs.id}  >
-
-                                <Col md="4"> 
+                            <Row key={bs.id}  mb="5px">
+                                 
+                                <Col md="3"> 
+                                <Card> 
                                     <CardImg top width="200" src={bs.image_url} alt="Card image cap" />
-                                   
+                                </Card>
                                 </Col>
 
                                 <Col md="8">
-                                    
-                                    <p> {bs.location.address1} , {bs.location.city} </p>
-                                    <p> {bs.name} </p>
-                                    <p> {bs.review_count} </p>
-                                    <Link to = {`/business/${bs.id}`} > See review </Link>
+                                    <h3> Name: {bs.name} </h3>
+
+                                    <p>     <FontAwesomeIcon icon="map" /> Location: {bs.location.address1} , {bs.location.city} </p>
+                                    <p> <FontAwesomeIcon icon={faCoffee} /> Reviews : {bs.review_count} </p>
+                                    <Link to = {`/business/${bs.id}`} >
+                                    <Button outline color="primary" size="lg">
+                                         See review <Badge color="secondary"> <FontAwesomeIcon icon="chevron-right" /> </Badge>
+                                    </Button>{' '}
+                                    </Link>
        
                                 </Col>
-
                             </Row>
+
                             
                            
                         ))

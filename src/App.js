@@ -13,6 +13,11 @@ import {
 } from "react-router-dom";
 //import { Button, Nav, NavItem, NavLink } from 'reactstrap';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faCheckSquare, faCoffee, faMap, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+library.add(fab, faCheckSquare, faCoffee, faMap, faChevronRight)
+
 export default function App() {
 
   
